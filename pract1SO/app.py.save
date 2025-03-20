@@ -1,0 +1,86 @@
+from bottle import Bottle, run
+import datetime
+import os
+
+app = Bottle()
+
+@app.route('/')
+def default():
+    return """<!DOCTYPE html>
+        <html>
+        <head>
+        <title>Bienvenido a nuestra página web!</title>
+        <style>
+        html { color-scheme: light dark; }
+        body { width: 35em; margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif; }
+        h1, h2 { color: #333; }
+        .taskbar {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .taskbar button {
+            background-color: #06c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .taskbar button:hover {
+            background-color: #0056b3;
+        }
+        .content {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        </style>
+        <script>
+        function redirectTo(path) {
+            window.location.href = path;
+        }
+        </script>
+        </head>
+        <body>
+        <div class="taskbar">
+            <button onclick="redirectTo('/hi')">Hora</button>
+            <button onclick="redirectTo('/status')">Status</button>
+        </div>
+        <div class="content">
+        <h1>Bienvenido a la web de Héctor y Jorge</h1>
+        <h2>Sistemas Operativos. Grado en Inteligencia Artificial. Práctica 1</h2>
+        <h2> Prác
+	</div>
+        <div class="footer">
+        <p> © 2025 Pablo y Marinela </p>
+        </div>
+        </body>
+        </html>"""
+
+
+@app.route('/hi')
+def hi():
+    now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    return f"Hola, hoy es {now}"
+
+@app.route('/status')
+def status():
+    try:
+        services = os.popen("systemctl list-units --type=service --state=running").read()
+        return f"<pre>{services}</pre>"
+    except Exception as e:
+        return f"Error obteniendo servicios {str(e)}"
+
+if __name__ == "__main__":
+    run(app, host='0.0.0.0', port=8080)
+
