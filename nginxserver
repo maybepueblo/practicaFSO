@@ -1,0 +1,25 @@
+server {
+        listen 443 ssl;
+
+        server_name sogia11.sogia.etsii.urjc.es;
+
+        ssl_certificate /etc/letsencrypt/sogia.etsii.urjc.es.pem;
+        ssl_certificate_key /etc/letsencrypt/sogia.etsii.urjc.es.key;
+
+        root /var/www/html;
+        index index.html;
+
+        location / {
+                proxy_pass http://localhost:8080;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+server {
+        listen 80;
+        server_name sogia11.sogia.etsii.urjc.es;
+
+        return 301 https://$host$request_uri;
+}
